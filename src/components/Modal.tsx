@@ -1,6 +1,6 @@
-import domtoimage from "dom-to-image";
-import { QRCodeCanvas } from "qrcode.react";
-import React, { useRef, useState } from "react";
+import domtoimage from 'dom-to-image';
+import { QRCodeCanvas } from 'qrcode.react';
+import React, { useRef, useState } from 'react';
 
 interface ModalProps {
   children: React.ReactNode;
@@ -9,10 +9,10 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ children, qrText, handleClose }) => {
-  const [fileType, setFileType] = useState("png");
+  const [fileType, setFileType] = useState('png');
   const qrRef = useRef<HTMLDivElement>(null);
 
-  const fileTypes = ["jpg", "png", "svg"];
+  const fileTypes = ['jpg', 'png', 'svg'];
 
   const handleDownload = () => {
     if (!qrRef.current) return;
@@ -33,7 +33,7 @@ const Modal: React.FC<ModalProps> = ({ children, qrText, handleClose }) => {
     }
 
     dataUrlPromise.then((dataUrl) => {
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = dataUrl;
       link.download = `qrcode.${fileType}`;
       link.click();

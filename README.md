@@ -51,17 +51,17 @@ The `qrcode.react` package does not provide its own TypeScript type declarations
 To use `qrcode.react` in a TypeScript project, we need to create a custom type declaration file, `qrcode.react.d.ts`, to define the types for the components provided by the package. This file includes the type definitions for `QRCodeCanvas` and `QRCodeSVG` components:
 
 ```ts
-declare module "qrcode.react" {
-  import * as React from "react";
+declare module 'qrcode.react' {
+  import * as React from 'react';
 
   interface QRCodeProps {
     value: string;
     size?: number;
     bgColor?: string;
     fgColor?: string;
-    level?: "L" | "M" | "Q" | "H";
+    level?: 'L' | 'M' | 'Q' | 'H';
     includeMargin?: boolean;
-    renderAs?: "canvas" | "svg";
+    renderAs?: 'canvas' | 'svg';
     imageSettings?: {
       src: string;
       x?: number;
@@ -88,12 +88,12 @@ The `qr-image` package does not provide its own TypeScript type declarations.
 To use `qr-image` in a TypeScript project, we need to create a custom type declaration file, `qr-image`.d.ts, to define the types for the functions provided by the package. This file includes the type definitions for the `imageSync` function:
 
 ```ts
-declare module "qr-image" {
+declare module 'qr-image' {
   interface Options {
-    type?: "png" | "svg" | "pdf" | "eps";
+    type?: 'png' | 'svg' | 'pdf' | 'eps';
     size?: number;
     margin?: number;
-    ec_level?: "L" | "M" | "Q" | "H";
+    ec_level?: 'L' | 'M' | 'Q' | 'H';
   }
 
   function imageSync(text: string, options?: Options): Buffer;
@@ -107,7 +107,7 @@ declare module "qr-image" {
 In the provided codebase, the qrcode.react package is used to generate and display QR codes within the React application. Specifically, the QRCodeSVG component from the qrcode.react package is imported and used in the `App.tsx` file:
 
 ```ts
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeSVG } from 'qrcode.react';
 ```
 
 This component is then rendered inside the Modal component to display the generated QR code:
