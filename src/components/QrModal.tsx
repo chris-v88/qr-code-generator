@@ -1,14 +1,18 @@
 import domtoimage from 'dom-to-image';
 import { QRCodeCanvas } from 'qrcode.react';
 import React, { useRef, useState } from 'react';
+import Button from './ui/Button';
+import Modal from './ui/Modal';
 
-interface ModalProps {
-  children: React.ReactNode;
+export type QrModalProps = {
+  children?: React.ReactNode;
   qrText: string;
   handleClose: () => void;
-}
+};
 
-const Modal: React.FC<ModalProps> = ({ children, qrText, handleClose }) => {
+const QrModal = (props: QrModalProps) => {
+  const { children, qrText, handleClose } = props;
+
   const [fileType, setFileType] = useState('png');
   const qrRef = useRef<HTMLDivElement>(null);
 
@@ -41,10 +45,8 @@ const Modal: React.FC<ModalProps> = ({ children, qrText, handleClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center h-screen bg-gray-400 bg-opacity-75">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-96 flex flex-col items-center">
-        <h1 className="text-xl font-semibold mb-4">Generated QR Code</h1>
-
+    <Modal isOpen={true} onClose={handleClose} title="Generated QR Code">
+      <div className="flex flex-col items-center">
         <div className="mb-4" ref={qrRef}>
           <QRCodeCanvas value={qrText} />
         </div>
@@ -60,23 +62,17 @@ const Modal: React.FC<ModalProps> = ({ children, qrText, handleClose }) => {
               <option value={type}>{type.toUpperCase()}</option>
             ))}
           </select>
-          <button
+          <Button
             className="mb-4 p-2 bg-green-500 text-white rounded hover:bg-green-700"
             onClick={handleDownload}
+            rightIcon="Download"
           >
             Download
-          </button>
+          </Button>
         </div>
-
-        <button
-          className="mt-4 p-2 bg-red-500 text-white rounded hover:bg-red-900"
-          onClick={handleClose}
-        >
-          Close
-        </button>
       </div>
-    </div>
+    </Modal>
   );
 };
 
-export default Modal;
+export default QrModal;

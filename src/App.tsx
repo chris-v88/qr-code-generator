@@ -4,7 +4,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 import type { IFormInput } from './resources/types';
 
-import Modal from './components/Modal';
+import QrModal from './components/QrModal';
+import Button from './components/ui/Button';
 
 const App: React.FC = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
@@ -43,20 +44,23 @@ const App: React.FC = () => {
             {errors.url.message}
           </small>
         )}
-        <button
+        <Button
           type="submit"
-          className="mt-5 p-2 bg-blue-500 text-white rounded hover:bg-customBlue"
+          className="mt-5 p-2"
+          tone="primary"
+          variant="solid"
+          size="md"
         >
           Submit
-        </button>
+        </Button>
       </form>
 
       {qrCodeUrl && (
-        <Modal qrText={qrCodeUrl} handleClose={handleCloseModal}>
-          <div className="mx-auto">
+        <QrModal qrText={qrCodeUrl} handleClose={handleCloseModal}>
+          {/* <div className="mx-auto">
             <QRCodeSVG value={qrCodeUrl} />
-          </div>
-        </Modal>
+          </div> */}
+        </QrModal>
       )}
     </div>
   );
