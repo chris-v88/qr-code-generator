@@ -1,4 +1,3 @@
-import { QRCodeSVG } from 'qrcode.react';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -7,7 +6,7 @@ import type { IFormInput } from './resources/types';
 import QrModal from './components/QrModal';
 import Button from './components/ui/Button';
 
-const App: React.FC = () => {
+const App = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const {
     register,
@@ -32,9 +31,16 @@ const App: React.FC = () => {
           placeholder="Enter URL"
           {...register('url', {
             required: 'Please enter a URL',
-            pattern: {
-              value: /^(https:\/\/)[^\s$.?#].[^\s]*$/,
-              message: 'Please enter a valid and secure URL (https only)',
+            validate: (value) => {
+              try {
+                const url = new URL(value);
+                if (url.protocol !== 'https:') {
+                  return 'Please enter a valid and secure URL (https only)';
+                }
+                return true;
+              } catch (error) {
+                return 'Please enter a valid and secure URL (https only)';
+              }
             },
           })}
           className={`p-2 mt-5 border rounded w-72 text-lg ${errors.url ? 'border-red-500' : 'border-gray-300'}`}
