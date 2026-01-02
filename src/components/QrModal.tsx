@@ -11,7 +11,7 @@ export type QrModalProps = {
 };
 
 const QrModal = (props: QrModalProps) => {
-  const { children, qrText, handleClose } = props;
+  const { qrText, handleClose } = props;
 
   const [fileType, setFileType] = useState('png');
   const qrRef = useRef<HTMLDivElement>(null);
