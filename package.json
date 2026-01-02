@@ -65,6 +65,7 @@
     "@types/dom-to-image": "^2.6.7",
     "@typescript-eslint/eslint-plugin": "^8.12.2",
     "@typescript-eslint/parser": "^8.12.2",
+    "@vercel/node": "^5.5.16",
     "autoprefixer": "^10.4.20",
     "dotenv": "^17.2.3",
     "eslint": "^8.57.0",

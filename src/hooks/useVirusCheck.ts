@@ -1,72 +1,25 @@
 import { useMutation } from '@tanstack/react-query';
 
-import {
-  virusTotalSubmitSchema,
-  virusTotalAnalysisSchema,
-} from '../utils/types';
-
 export const useVirusCheck = (options = {}) => {
   return useMutation({
     mutationFn: async (url: string): Promise<boolean> => {
-      const apiKey = process.env.REACT_APP_VIRUSTOTAL_API_KEY;
-
-      if (!apiKey) {
-        throw new Error('VirusTotal API key not set');
-      }
-
       try {
-        // Step 1: Submit URL for scanning
-        const submitResponse = await fetch(
-          'https://www.virustotal.com/api/v3/urls',
-          {
-            method: 'POST',
-            headers: {
-              'x-apikey': apiKey,
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `url=${encodeURIComponent(url)}`,
-          }
-        );
+        // Call our serverless API endpoint instead of directly calling VirusTotal
+        const response = await fetch('/api/virus-check', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url }),
+        });
 
-        if (!submitResponse.ok) {
-          throw new Error('Failed to submit URL');
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Failed to check URL safety');
         }
 
-        const submitData = virusTotalSubmitSchema.parse(
-          await submitResponse.json()
-        );
-        const analysisId = submitData.data.id;
-
-        // Step 2: Poll for results
-        let result;
-        for (let i = 0; i < 10; i++) {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          const pollResponse = await fetch(
-            `https://www.virustotal.com/api/v3/analyses/${analysisId}`,
-            {
-              headers: { 'x-apikey': apiKey },
-            }
-          );
-
-          if (!pollResponse.ok) {
-            throw new Error('Failed to poll analysis');
-          }
-
-          const analysisData = virusTotalAnalysisSchema.parse(
-            await pollResponse.json()
-          );
-          if (analysisData.data.attributes.status === 'completed') {
-            result = analysisData;
-            break;
-          }
-        }
-
-        if (!result) {
-          throw new Error('Analysis did not complete');
-        }
-
-        const stats = result.data.attributes.stats;
-        return stats.malicious === 0;
+        const data = await response.json();
+        return data.isSafe;
       } catch (error) {
         if (error instanceof Error) {
           throw new Error(`VirusTotal check failed: ${error.message}`);
