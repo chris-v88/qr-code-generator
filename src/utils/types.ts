@@ -12,12 +12,6 @@ export enum ButtonType {
   RESET = 'reset',
 }
 
-export enum VirusScanStatus {
-  COMPLETE = 'completed',
-  QUEUE = 'queued',
-  IN_PROGRESS = 'in-progress',
-}
-
 // SCHEMAS
 export const virusTotalSubmitSchema = z.object({
   data: z.object({
@@ -25,10 +19,18 @@ export const virusTotalSubmitSchema = z.object({
   }),
 });
 
+export const virusScanStatusSchema = z.union([
+  z.literal('completed'),
+  z.literal('queued'),
+  z.literal('in-progress'),
+]);
+
+export type VirusScanStatus = z.infer<typeof virusScanStatusSchema>;
+
 export const virusTotalAnalysisSchema = z.object({
   data: z.object({
     attributes: z.object({
-      status: z.enum(VirusScanStatus),
+      status: virusScanStatusSchema,
       stats: z.object({
         malicious: z.number().int().min(0),
       }),
