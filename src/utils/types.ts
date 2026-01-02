@@ -25,10 +25,13 @@ export const virusTotalSubmitSchema = z.object({
   }),
 });
 
+export const virusScanStatusSchema = z.nativeEnum(VirusScanStatus);
+export type VirusScanStatusType = z.infer<typeof virusScanStatusSchema>;
+
 export const virusTotalAnalysisSchema = z.object({
   data: z.object({
     attributes: z.object({
-      status: z.enum(VirusScanStatus),
+      status: virusScanStatusSchema,
       stats: z.object({
         malicious: z.number().int().min(0),
       }),
