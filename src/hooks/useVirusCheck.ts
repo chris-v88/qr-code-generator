@@ -8,7 +8,7 @@ import {
 export const useVirusCheck = (options = {}) => {
   return useMutation({
     mutationFn: async (url: string): Promise<boolean> => {
-      const apiKey = process.env.VIRUSTOTAL_API_KEY;
+      const apiKey = process.env.REACT_APP_VIRUSTOTAL_API_KEY;
 
       if (!apiKey) {
         throw new Error('VirusTotal API key not set');
