@@ -92,22 +92,6 @@ I used this because it handles forms with checks without us writing tons of code
 
 This app is deployed on Vercel with serverless functions to handle the VirusTotal API securely.
 
-### To Deploy:
-
-1. **Push to GitHub** (commit and push your changes)
-
-2. **Deploy on Vercel**:
-   - Go to [vercel.com](https://vercel.com)
-   - Import your GitHub repository
-   - Vercel will auto-detect it's a React app
-
-3. **Set Environment Variable** in Vercel:
-   - Go to your project → Settings → Environment Variables
-   - Add: `VIRUSTOTAL_API_KEY` = `your_api_key_here`
-   - This keeps your API key secure (server-side only)
-
-4. **Redeploy** if needed - Vercel auto-deploys on every push
-
 ### Why Serverless Function?
 
 The VirusTotal API doesn't support CORS (cross-origin requests from browsers). The solution is a serverless function at `/api/virus-check` that:
