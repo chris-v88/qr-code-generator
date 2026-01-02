@@ -18,14 +18,14 @@ const App = () => {
   } = useForm<IFormInput>();
 
   const mutation = useVirusCheck({
-    onSuccess: (isSafe: boolean, sanitized: string) => {
+    onSuccess: (isSafe: boolean, url: string) => {
       if (!isSafe) {
         setError('url', {
           message: 'URL detected as potentially unsafe by VirusTotal',
         });
         return;
       }
-      setQrCodeUrl(sanitized);
+      setQrCodeUrl(url);
     },
     onError: (error: Error) => {
       setError('url', {
