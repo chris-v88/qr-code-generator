@@ -4,7 +4,7 @@ import {
   VARIANT_CLASSES,
   SIZE_CLASSES,
   BUTTON_TONE,
-} from '../../resources/types';
+} from '../../utils/constants';
 import Icon, { LucideIconName } from './Icon';
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import type { IFormInput } from './resources/types';
+import type { IFormInput } from './utils/types';
+import { sanitizeUrl } from './utils/helpers';
+import { useVirusCheck } from './hooks/useVirusCheck';
 
 import QrModal from './components/QrModal';
 import Button from './components/ui/Button';
@@ -12,10 +14,35 @@ const App = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<IFormInput>();
 
+  const mutation = useVirusCheck({
+    onSuccess: (isSafe: boolean, url: string) => {
+      if (!isSafe) {
+        setError('url', {
+          message: 'URL detected as potentially unsafe by VirusTotal',
+        });
+        return;
+      }
+      setQrCodeUrl(url);
+    },
+    onError: (error: Error) => {
+      setError('url', {
+        message: error.message || 'Failed to check URL safety',
+      });
+    },
+  });
+
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    setQrCodeUrl(data.url);
+    const sanitized = sanitizeUrl(data.url);
+    if (!sanitized) {
+      setError('url', {
+        message: 'URL contains harmful content or is invalid',
+      });
+      return;
+    }
+    mutation.mutate(sanitized);
   };
 
   const handleCloseModal = () => {
@@ -56,8 +83,9 @@ const App = () => {
           tone="primary"
           variant="solid"
           size="md"
+          disabled={mutation.isPending}
         >
-          Submit
+          {mutation.isPending ? 'Checking...' : 'Submit'}
         </Button>
       </form>
 

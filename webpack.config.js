@@ -1,4 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
+const dotenv = require('dotenv');
+
+const env = dotenv.config().parsed || {};
 
 module.exports = {
   entry: './src/index.tsx',
@@ -22,6 +26,11 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(env),
+    }),
+  ],
   devtool: 'source-map',
   devServer: {
     static: {
