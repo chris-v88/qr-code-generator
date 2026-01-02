@@ -16,7 +16,7 @@ const App = () => {
     formState: { errors },
     setError,
   } = useForm<IFormInput>();
-  
+
   const mutation = useVirusCheck({
     onSuccess: (isSafe: boolean, sanitized: string) => {
       if (!isSafe) {
