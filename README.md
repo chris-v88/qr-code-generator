@@ -1,5 +1,7 @@
 # Generate Your QR Code
 
+Run app here : https://qr-code-generator-lilac-two-11.vercel.app/
+
 ## Overview
 
 This app is built for easily make QR codes without needing fancy tools. It's simple, but it had some tricky problems to make it work in a browser.
