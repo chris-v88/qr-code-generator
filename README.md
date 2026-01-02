@@ -85,3 +85,8 @@ const {
 - When you submit, it makes the QR code:
 
 I used this because it handles forms with checks without us writing tons of code.
+
+---
+
+### Note:
+API key is client-side for demo purposes—do not use sensitive keys

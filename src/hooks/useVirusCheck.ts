@@ -68,6 +68,9 @@ export const useVirusCheck = (options = {}) => {
         const stats = result.data.attributes.stats;
         return stats.malicious === 0;
       } catch (error) {
+        if (error instanceof Error) {
+          throw new Error(`VirusTotal check failed: ${error.message}`);
+        }
         throw new Error('VirusTotal check failed');
       }
     },
