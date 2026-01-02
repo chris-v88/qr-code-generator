@@ -2,8 +2,8 @@ export const sanitizeUrl = (url: string): string => {
   let decodedUrl: string;
   try {
     decodedUrl = decodeURIComponent(url);
-  } catch {
-    console.error('Failed to decode URL');
+  } catch (error) {
+    console.error('Failed to decode URL', { url, error });
     decodedUrl = url;
   }
 

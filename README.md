@@ -81,7 +81,7 @@ const {
 
 - `register` the box so it knows what you type.
 - Checks if the link is real and safe (must be `https`)
-- Shows error messages if something's wroong
+- Shows error messages if something's wrong
 - When you submit, it makes the QR code:
 
 I used this because it handles forms with checks without us writing tons of code.
