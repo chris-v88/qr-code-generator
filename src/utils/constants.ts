@@ -1,15 +1,3 @@
-// TYPES
-export type IFormInput = {
-  url: string;
-};
-
-// ENUMS
-export enum ButtonType {
-  BUTTON = 'button',
-  SUBMIT = 'submit',
-  RESET = 'reset',
-}
-
 // CONSTANTS
 export const BUTTON_TONE = {
   primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',

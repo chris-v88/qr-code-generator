@@ -1,21 +1,41 @@
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import type { IFormInput } from './resources/types';
+import type { IFormInput } from './utils/types';
+import { sanitizeUrl, checkVirusTotal } from './resources/security';
 
 import QrModal from './components/QrModal';
 import Button from './components/ui/Button';
 
 const App = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+  const [isChecking, setIsChecking] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<IFormInput>();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    setQrCodeUrl(data.url);
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    setIsChecking(true);
+    const sanitized = sanitizeUrl(data.url);
+    if (!sanitized) {
+      setError('url', {
+        message: 'URL contains harmful content or is invalid',
+      });
+      setIsChecking(false);
+      return;
+    }
+    const isSafe = await checkVirusTotal(sanitized);
+    setIsChecking(false);
+    if (!isSafe) {
+      setError('url', {
+        message: 'URL detected as potentially unsafe by VirusTotal',
+      });
+      return;
+    }
+    setQrCodeUrl(sanitized);
   };
 
   const handleCloseModal = () => {
@@ -56,8 +76,9 @@ const App = () => {
           tone="primary"
           variant="solid"
           size="md"
+          disabled={isChecking}
         >
-          Submit
+          {isChecking ? 'Checking...' : 'Submit'}
         </Button>
       </form>
 
