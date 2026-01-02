@@ -2,115 +2,56 @@
 
 ## Overview
 
-This application allows users to generate QR codes by entering a URL. The QR code is displayed in a modal, and users can close the modal when they are done.
+This app is built for easily make QR codes without needing fancy tools. It's simple, but it had some tricky problems to make it work in a browser.
 
 ## Prerequisites
 
-To run this application, you need to have the following packages installed with the specified versions:
+To make this app work, I need these "packages" installed, which are listed in `package.json` file:
 
-- **`react`** : `^18.3.1`
-- **`react-dom`** : `^18.3.1`
-- **`react-hook-form`** : `^7.53.1`
-- **`qrcode.react`** : `^4.1.0`
-- **`qr-image`** : `^3.2.0`
-- **`typescript`** : `^4.9.5`
-- **`react-scripts`** : `5.0.1`
-- **`browserify-zlib`** : `^0.2.0`
-- **`stream-browserify`** : `^3.0.0`
+- **react** and **react-dom** (`^18.3.1`): the building blocks for the app.
+- **react-hook-form** (`^7.53.1`): where you type the link, it checks if what you type is okay and shows errors. I used it because it makes handling forms.
+- **qrcode.react** (`^4.1.0`): tool for drawing the QR code picture. It's made for React and works great in browsers.
+- **qr-image** (`^3.2.0`): Another QR tool
+- **typescript** (`^4.9.5`): instead of `javascript`, it helps with data type and catches mistakes early (I'm used to write react with typescript).
+- **react-scripts** (`5.0.1`): helps run the app and build it.
+- **browserify-zlib** (`^0.2.0`) and **stream-browserify** (`^3.0.0`): fake helpers for things that don't work in browsers. I used them to fix problems with the QR code tool.
 
-## Webpack Configuration
+## Webpack
 
-### Issue
+Webpack that takes all the pieces of this app (like the React code, the QR code maker, and other stuff) and put them into one file that the web browser can understand and run. Without it, the app wouldn't load.
 
-The `webpack.config.js` file was created to bundle application code and its dependencies into a format that can run in a web browser. Some **Node.js modules**, like `zlib` (used for compression) and `stream` (used for handling data streams), are not available in the browser by default
+- **The Problem**: Some tools, like `"zlib"` (for squeezing data to make it smaller) and `"stream"` (for handling data in pieces, like a video loading), come from "Node.js" (a special way to run code on computers). Browsers don't have these tools built-in, so they can't use them. But the QR code tool (`qrcode.react`) needs them secretly to work.
 
-### Resolve
-
-The project use `polyfills` -- substitute implementations of these modules that work in the browser: The `browserify-zlib` (used as a replacement for the `zlib` module) and `stream-browserify` (used as a replacement for the `stream` module) packages are included in the `package.json`. The `webpack.config.js` file includes the following configuration to resolve these modules:
+- **The Fix**: I use "polyfills"—fake versions that pretend to be the real tools. `browserify-zlib` acts like zlib, and `stream-browserify` acts like stream. In the `webpack.config.js` file, I tell webpack:
 
 ```js
 resolve: {
-  extensions: ['.tsx', '.ts', '.js'], // which file extensions to look for when resolving module imports
-  fallback: { // alternative implementations (polyfills) for modules that are not available in the browser
+  // which file extensions to look for when resolving module imports
+  extensions: ['.tsx', '.ts', '.js'],
+
+  // alternative implementations (polyfills) for modules that are not available in the browser
+  fallback: {
     zlib: require.resolve('browserify-zlib'),
     stream: require.resolve('stream-browserify'),
   },
 },
 ```
 
+This way, when the QR code maker tries to use zlib or stream, it gets the fake ones that work in browsers. I did this because without polyfills, the app would crash when making QR codes.
+
 ## TypeScript Declarations
 
-### `qrcode.react.d.ts`
+The QR code tools (`qrcode.react`) are made in plain JavaScript, not TypeScript. So, TypeScript doesn't know how to use them. It doesn't know what buttons or settings they have.
 
-#### Issue
+To fix this, I made "instruction books" or blueprint called `.d.ts` files.
 
-The `qrcode.react` package does not provide its own TypeScript type declarations.
-
-#### Explanation
-
-To use `qrcode.react` in a TypeScript project, we need to create a custom type declaration file, `qrcode.react.d.ts`, to define the types for the components provided by the package. This file includes the type definitions for `QRCodeCanvas` and `QRCodeSVG` components:
-
-```ts
-declare module 'qrcode.react' {
-  import * as React from 'react';
-
-  interface QRCodeProps {
-    value: string;
-    size?: number;
-    bgColor?: string;
-    fgColor?: string;
-    level?: 'L' | 'M' | 'Q' | 'H';
-    includeMargin?: boolean;
-    renderAs?: 'canvas' | 'svg';
-    imageSettings?: {
-      src: string;
-      x?: number;
-      y?: number;
-      height?: number;
-      width?: number;
-      excavate?: boolean;
-    };
-  }
-
-  export const QRCodeCanvas: React.FC<QRCodeProps>;
-  export const QRCodeSVG: React.FC<QRCodeProps>;
-}
-```
-
-### `qr-image.d.ts`
-
-#### Issue
-
-The `qr-image` package does not provide its own TypeScript type declarations.
-
-#### Explanation
-
-To use `qr-image` in a TypeScript project, we need to create a custom type declaration file, `qr-image`.d.ts, to define the types for the functions provided by the package. This file includes the type definitions for the `imageSync` function:
-
-```ts
-declare module 'qr-image' {
-  interface Options {
-    type?: 'png' | 'svg' | 'pdf' | 'eps';
-    size?: number;
-    margin?: number;
-    ec_level?: 'L' | 'M' | 'Q' | 'H';
-  }
-
-  function imageSync(text: string, options?: Options): Buffer;
-
-  export { imageSync };
-}
-```
-
-### We ended up using qrcode.react.d.ts
-
-In the provided codebase, the qrcode.react package is used to generate and display QR codes within the React application. Specifically, the QRCodeSVG component from the qrcode.react package is imported and used in the `App.tsx` file:
+- **qrcode.react.d.ts** : This then being imported into `App.tsx` like this:
 
 ```ts
 import { QRCodeSVG } from 'qrcode.react';
 ```
 
-This component is then rendered inside the Modal component to display the generated QR code:
+Then in the code, it shows the QR code:
 
 ```tsx
 {
@@ -124,15 +65,11 @@ This component is then rendered inside the Modal component to display the genera
 }
 ```
 
-Since `qrcode.react` does not provide its own TypeScript type declarations, we created the `qrcode.react.d.ts` file to define the types for the components provided by the package. This allows us to use the `QRCodeSVG` component with proper type checking in our TypeScript project.
+- **qr-image.d.ts**: This is for another QR tool
 
-On the other hand, the `qr-image` package is not used in the provided codebase. Therefore, the `qr-image.d.ts` file, which defines the types for the `qr-image` package, is not utilized in this project.
+## Form with `react-hook-form`
 
-## Usage of `react-hook-form`
-
-The `react-hook-form` library is used in this application to manage form state and validation. Here is how it is being used in `App.tsx` :
-
-1. **Form Registration**: The `useForm` hook is used to register the form fields and manage their state.
+The input where you type the link uses `react-hook-form`
 
 ```ts
 const {
@@ -142,39 +79,9 @@ const {
 } = useForm<IFormInput>();
 ```
 
-2. **Form Submission**: The `handleSubmit` function is used to handle form submission. The `onSubmit` function is called when the form is successfully submitted.
+- `register` the box so it knows what you type.
+- Checks if the link is real and safe (must be `https`)
+- Shows error messages if something's wroong
+- When you submit, it makes the QR code:
 
-```ts
-const onSubmit: SubmitHandler<IFormInput> = (data) => {
-  setQrCodeUrl(data.url);
-};
-```
-
-3. **Field Validation**: The `register` function is used to register the input field and apply validation rules.
-
-```ts
-<input
-  type='text'
-  placeholder='Enter URL'
-  {...register('url', {
-    required: 'Please enter a URL',
-    pattern: {
-      value: /^(https:\/\/)[^\s$.?#].[^\s]*$/,
-      message: 'Please enter a valid and secure URL (https only)',
-    },
-  })}
-  className={`p-2 mt-5 border rounded w-72 text-lg ${errors.url ? 'border-red-500' : 'border-gray-300'}`}
-/>
-```
-
-4. **Error Handling**: Validation `errors` are displayed using the errors object.
-
-```ts
-{errors.url && (
-  <small className='text-red-500 text-xs mt-1.5'>
-    {errors.url.message}
-  </small>
-)}
-```
-
-By using `react-hook-form`, the application efficiently manages form state and validation with minimal boilerplate code.
+I used this because it handles forms with checks without us writing tons of code.
