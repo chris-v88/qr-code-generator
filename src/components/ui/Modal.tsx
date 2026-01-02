@@ -16,9 +16,10 @@ const Modal = (props: ModalProps) => {
     <div className="fixed inset-0 flex items-center justify-center h-screen bg-gray-400 bg-opacity-75 z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-96 max-w-full mx-4 relative">
         <Button
+          tone="secondary"
           variant="ghost"
           size="sm"
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          className="absolute top-4 right-4 text-gray-700 hover:text-gray-900"
           onClick={onClose}
         >
           <Icon name="X" size={20} />
