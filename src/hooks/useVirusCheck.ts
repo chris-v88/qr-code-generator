@@ -15,11 +15,20 @@ export const useVirusCheck = (options = {}) => {
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error || 'Failed to check URL safety');
+          throw new Error(
+            errorData.error || errorData.message || 'Failed to check URL safety'
+          );
         }
 
         const data = await response.json();
-        return data.isSafe;
+
+        // Handle the new MVC response format
+        if (data.status === 'error') {
+          throw new Error(data.error || data.message || 'Virus check failed');
+        }
+
+        // Extract the actual result from the data field
+        return data.data?.isSafe ?? false;
       } catch (error) {
         if (error instanceof Error) {
           throw new Error(`VirusTotal check failed: ${error.message}`);
