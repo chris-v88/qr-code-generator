@@ -10,13 +10,13 @@ export enum ButtonType {
   BUTTON = 'button',
   SUBMIT = 'submit',
   RESET = 'reset',
-};
+}
 
 export enum VirusScanStatus {
-  COMPLETE = 'completed', 
-  QUEUE = 'queued', 
+  COMPLETE = 'completed',
+  QUEUE = 'queued',
   IN_PROGRESS = 'in-progress',
-};
+}
 
 // SCHEMAS
 export const virusTotalSubmitSchema = z.object({
