@@ -95,6 +95,7 @@ This app is deployed on Vercel with serverless functions to handle the VirusTota
 ### Why Serverless Function?
 
 The VirusTotal API doesn't support CORS (cross-origin requests from browsers). The solution is a serverless function at `/api/virus-check` that:
+
 - Runs server-side (no CORS issues)
 - Keeps the API key secure
 - Proxies requests to VirusTotal
